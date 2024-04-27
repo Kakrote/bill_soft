@@ -1,7 +1,8 @@
 import customtkinter as ctk
 import tkinter
 from ui.login import LogIn
-from .globals import GLOBAL
+from ui.bill import Bill
+# from .globals import GLOBAL
 
 ctk.set_appearance_mode('light')
 
@@ -18,10 +19,12 @@ class MainFrame(ctk.CTkFrame):
         self.grid_columnconfigure(0,weight=1)
 
         self.login=LogIn(self)
+        self.bill=Bill(self)
 
-        GLOBAL['mainframe']=self
 
-        self.activeframe=self.login
+        # GLOBAL['mainframe']=self
+
+        self.activeframe=self.bill
     def show(self):
         self.activeframe.show()
         self.pack(fill=tkinter.BOTH,expand=True,padx=10,pady=10)
