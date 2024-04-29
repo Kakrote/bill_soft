@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import tkinter
+from ui.mainbill import AddItem
 
 
 class ItemListFrame(ctk.CTkScrollableFrame):
@@ -44,12 +45,16 @@ class RightSideFrame(ctk.CTkFrame):
         super().__init__(master,width=1100,height=600,**kwargs)
         self.grid_propagate(False)
         self.grid_columnconfigure(0,weight=1)
+        self.grid_rowconfigure((0,1),weight=1)
 
         self.l_title=ctk.CTkLabel(self,text='Billing section',font=('halvetica',20),text_color='#171F66',fg_color='white')
+        self.additem=AddItem(self)
 
     def show(self):
 
         self.l_title.grid(row=0,column=0,sticky='nsew',padx=0,pady=0)
+
+        self.additem.show()
 
         self.grid(row=1,column=1,sticky='nsew',padx=(0,10),pady=(10,5))
 
