@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import tkinter
-from ui.mainbill import AddItem
+from ui.mainbill import AddItem,CheckOutList
 
 
 class ItemListFrame(ctk.CTkScrollableFrame):
@@ -49,12 +49,14 @@ class RightSideFrame(ctk.CTkFrame):
 
         self.l_title=ctk.CTkLabel(self,text='Billing section',font=('halvetica',20),text_color='#171F66',fg_color='white')
         self.additem=AddItem(self)
+        self.checkout=CheckOutList(self)
 
     def show(self):
 
         self.l_title.grid(row=0,column=0,sticky='nsew',padx=0,pady=0)
 
         self.additem.show()
+        self.checkout.show()
 
         self.grid(row=1,column=1,sticky='nsew',padx=(0,10),pady=(10,5))
 
