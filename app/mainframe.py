@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import tkinter
-from ui.login import LogIn
-from ui.bill import Bill
+from .ui.login import LogIn
+from .ui.bill import Bill
 # from .globals import GLOBAL
 
 ctk.set_appearance_mode('light')
@@ -24,6 +24,7 @@ class MainFrame(ctk.CTkFrame):
 
         # GLOBAL['mainframe']=self
 
+        # self.activeframe=self.login
         self.activeframe=self.bill
     def show(self):
         self.activeframe.show()
@@ -45,6 +46,6 @@ class App(ctk.CTk):
         self.mainloop()
 
 app=None
-if __name__=='__main__':
+def main():
     app=App()
     app.show()

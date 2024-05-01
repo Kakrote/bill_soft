@@ -1,6 +1,10 @@
 import customtkinter as ctk
 import tkinter
-from ui.mainbill import AddItem,CheckOutList
+from app.ui.mainbill import AddItem,CheckOutList
+
+from ..src.listing import listingItems
+
+store_list=list()
 
 
 class ItemListFrame(ctk.CTkScrollableFrame):
@@ -8,8 +12,15 @@ class ItemListFrame(ctk.CTkScrollableFrame):
         super().__init__(master,width=278,height=600,**kwargs)
         self.grid_columnconfigure((0,1),weight=1)
         
+        self.store_list=store_list
+        self.store_list.append(listingItems(self))
+        self.store_list.append(listingItems(self))
+        self.store_list.append(listingItems(self))
+        self.store_list.append(listingItems(self))
     def show(self):
 
+        for i,item in enumerate(self.store_list):
+            item.grid(row=i,column=0,pady=2)
 
         self.grid(row=1,column=0,sticky='nsew',padx=5,pady=5)
 
@@ -53,7 +64,7 @@ class RightSideFrame(ctk.CTkFrame):
 
     def show(self):
 
-        self.l_title.grid(row=0,column=0,sticky='nsew',padx=0,pady=0)
+        # self.l_title.grid(row=0,column=0,sticky='nsew',padx=0,pady=0)
 
         self.additem.show()
         self.checkout.show()
