@@ -1,5 +1,9 @@
 import customtkinter as ctk
 import tkinter
+import pandas as pd
+import os
+# from ..src.itembyid import enterId
+from ..globals import GLOBAL
 
 class OrderList(ctk.CTkScrollableFrame):
     def __init__(self,master,**kwargs):
@@ -20,8 +24,17 @@ class AddItem(ctk.CTkFrame):
         self.grid_rowconfigure((2,3),weight=1)
 
         self.in_ids=ctk.CTkEntry(self,placeholder_text='id',width=100,height=20,font=('halvetica',12),text_color='#333')
-        self.in_ids.bind("<Enter>", lambda *args: print("ENTERED"))
-        self.item_name=ctk.CTkEntry(self,font=('halvetica',12),text_color='#333',width=100,height=20)
+
+        # This is for entering the id:
+
+
+        # self.in_ids.bind("<Enter>", lambda *args: print("ENTERED"))
+        self.in_ids.bind("<Return>",self.onEnter)
+        
+
+            
+
+        self.item_name=ctk.CTkEntry(self,font=('halvetica',12),text_color='#333',width=100,height=20,placeholder_text='item')
         self.in_quntity=ctk.CTkEntry(self,font=('halvetica',12),text_color='#333',width=30,height=10)
         self.b_ok=ctk.CTkButton(self,text='ok',width=70,height=30)
         self.b_increment=ctk.CTkButton(self,text='+',width=20,height=20)
@@ -31,6 +44,23 @@ class AddItem(ctk.CTkFrame):
 
         self.orderlist=OrderList(self)
     
+    def onEnter(self,*args):
+        self.id=self.in_ids.get()
+        itempath=os.path.join(os.getcwd(),'app','data','stocks','items.csv')
+        data=pd.read_csv(itempath)
+        self.item_name.delete(0,tkinter.END)
+        for x in data.index:
+            if data.loc[x,'id']==int(self.id):
+                print(data.loc[x,'product'])
+                self.item_name.insert(0,data.loc[x,'product'])
+                break
+        # print(data)
+
+
+    
+
+
+
     def show(self):
 
         self.in_ids.grid(row=0,column=0,sticky='nw',columnspan=2,padx=10,pady=10)
@@ -46,6 +76,8 @@ class AddItem(ctk.CTkFrame):
         self.orderlist.show()
 
         self.grid(row=0,column=0,sticky='nsew',padx=10,pady=10)
+
+
 
 
 class AddedItemsInList(ctk.CTkScrollableFrame):

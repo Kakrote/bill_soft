@@ -1,8 +1,9 @@
 import customtkinter as ctk
 import tkinter
 from app.ui.mainbill import AddItem,CheckOutList
-
-from ..src.listing import listingItems
+import os
+from ..src.listing import listingItems, ItemData
+import pandas as pd
 
 store_list=list()
 
@@ -13,16 +14,22 @@ class ItemListFrame(ctk.CTkScrollableFrame):
         self.grid_columnconfigure((0,1),weight=1)
         
         self.store_list=store_list
-        self.store_list.append(listingItems(self))
-        self.store_list.append(listingItems(self))
-        self.store_list.append(listingItems(self))
-        self.store_list.append(listingItems(self))
+
+        itemspath=os.path.join(os.getcwd(),'app','data','stocks','items.csv')
+        df = pd.read_csv(itemspath)
+        for i in range(df.shape[0]):
+            item = dict(df.iloc[i])
+            self.store_list.append(listingItems(self, ItemData(id=item['id'], product=item['product'], price=item['price'], stock=item['stock'])))
+        # self.store_list.append(listingItems(self))
+        # self.store_list.append(listingItems(self))
+        # self.store_list.append(listingItems(self))
+        # self.store_list.append(listingItems(self))
     def show(self):
 
         for i,item in enumerate(self.store_list):
             item.grid(row=i,column=0,pady=2)
 
-        self.grid(row=1,column=0,sticky='nsew',padx=5,pady=5)
+        self.grid(row=1,column=0,columnspan=2,sticky='nsew',padx=5,pady=5)
 
 
 
