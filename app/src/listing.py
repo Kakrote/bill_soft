@@ -36,4 +36,29 @@ def listingItems(master, data:ItemData= ItemData(id=1, product="Kurkure", price=
 
     return f_item
 
+@dataclass
+class OrderItems:
+    id:str
+    product:str
+    qunt:str
+    price:str
+
+def listingOrder(master, order:OrderItems):
+    f_order=ctk.CTkFrame(master,width=500,height=50)
+
+    l_id = ctk.CTkLabel(f_order,padx=2, text=order.id)
+    l_product = ctk.CTkLabel(f_order, anchor="center", text=order.product)
+    l_price = ctk.CTkLabel(f_order, padx=8, text=order.price)
+    l_qunt = ctk.CTkLabel(f_order,text=order.qunt,padx=2)
+
+    f_order.grid_columnconfigure((0,1,2), weight=1)
+    f_order.grid_propagate(False)
+    
+    l_id.grid(row=0, column=0, sticky='w')
+    l_product.grid(row=0, column=1, sticky='we')
+    l_qunt.grid(row=0, column=2, sticky='e')
+    l_price.grid(row=0, column=3, sticky='w')
+
+    return f_order
+
 
