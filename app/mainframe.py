@@ -2,6 +2,7 @@ import customtkinter as ctk
 import tkinter
 from .ui.login import LogIn
 from .ui.bill import Bill
+from .ui.updatelist import UpdateList
 # from .globals import GLOBAL
 
 ctk.set_appearance_mode('light')
@@ -20,12 +21,14 @@ class MainFrame(ctk.CTkFrame):
 
         self.login=LogIn(self)
         self.bill=Bill(self)
+        self.updatelist=UpdateList(self)
 
 
         # GLOBAL['mainframe']=self
 
         # self.activeframe=self.login
-        self.activeframe=self.bill
+        self.activeframe=self.updatelist
+        # self.activeframe=self.bill
     def show(self):
         self.activeframe.show()
         self.pack(fill=tkinter.BOTH,expand=True,padx=10,pady=10)

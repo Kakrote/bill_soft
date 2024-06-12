@@ -41,6 +41,7 @@ class LeftSide(ctk.CTkFrame):
 
         self.searchbar=ctk.CTkEntry(self,placeholder_text='Search item',font=('halvetica',13),width=200,height=20)
         self.b_search=ctk.CTkButton(self,text='Search',font=('halvetica',13),width=50,height=20,text_color='#171F66',command=lambda: print("searching"))
+        self.b_update_list=ctk.CTkButton(self,text='Update',font=('halvetica',13),width=50,height=20,text_color='#171f66',command=lambda: print('updated clicked'))
 
 
         self.itemslist=ItemListFrame(self)
@@ -49,6 +50,7 @@ class LeftSide(ctk.CTkFrame):
     def show(self):
         self.searchbar.grid(row=0,column=0,padx=5,sticky='n')
         self.b_search.grid(row=0,column=1,padx=5,sticky='n')
+        self.b_update_list.grid(row=2,column=0,padx=5,pady=5,sticky='n')
 
 
         self.itemslist.show()
