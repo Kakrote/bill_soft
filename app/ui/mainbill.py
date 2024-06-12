@@ -2,7 +2,7 @@ import customtkinter as ctk
 import tkinter
 import pandas as pd
 import os
-import csv
+# import csv
 from ..src.listing import listingOrder,OrderItems
 # from ..src.itembyid import enterId
 from ..globals import GLOBAL
@@ -13,10 +13,12 @@ itempath=os.path.join(os.getcwd(),'app','data','stocks','items.csv')
 data=pd.read_csv(itempath)
 
 class AddItem(ctk.CTkFrame):
+    me=None
     orderlist = None
     def __init__(self,master,**kwargs):
         GLOBAL['AddItem']=self
         super().__init__(master,width=300,height=300,**kwargs)
+        AddItem.me=self
         self.grid_propagate(False)
         # self.grid_rowconfigure((0,1),weight=1)
         self.grid_columnconfigure((0,1,2,3),weight=0)
@@ -46,6 +48,7 @@ class AddItem(ctk.CTkFrame):
         self.b_next=ctk.CTkButton(self,text='NEXT',width=90,height=30,text_color='#333',command=self.orderBill)
 
         self.orderlist=OrderList(self)
+        self.checkoutlist=AddedItemsInList(self, fg_color="red")
     
     
     def onEnter(self,*args):
@@ -53,7 +56,6 @@ class AddItem(ctk.CTkFrame):
         # self.qunt=self.in_quntity.get() or 1
         # self.qunt= 1
         self.item_name.delete(0,tkinter.END)
-        self.in_ids.delete(0,tkinter.END)
         # self.in_quntity.delete(0,tkinter.END)
         for x in data.index:
             if data.loc[x,'id']==int(self.id):
@@ -69,12 +71,14 @@ class AddItem(ctk.CTkFrame):
     def onQunt(self,*args):
         self.price=None
         self.qunt=self.in_quntity.get()
+        self.in_ids.delete(0,tkinter.END)
         self.in_quntity.delete(0,tkinter.END)
         for x in data.index:
             if data.loc[x,'id']==int(self.id):
                 self.price=data.loc[x,'price']
                 break
         self.item_name1=self.item_name.get()
+        self.item_name.delete(0,tkinter.END)    
         dict={'id':self.id, 'name':self.item_name1,'qunt':self.qunt,'price':(int(self.qunt)*(self.price))}
 
         self.addOrder(dict)
@@ -116,13 +120,55 @@ class AddItem(ctk.CTkFrame):
         name=self.e_name.get()
         path=os.path.join(os.getcwd(),'app','bills',)
         # fillname=path+name+'.csv'
-        fillname= os.path.join(path, name+".csv")
-        with open(fillname,'w',newline='') as csvfile:
+        filename= os.path.join(path, name+".csv")
+        # fillename=filename
+        with open(filename,'w',newline='') as csvfile:
+            csvfile.write('id'+','+'iteam'+','+'quntity'+','+'price'+'\n')
             for j in self.bill_list:
                 csvfile.write(j['id']+','+j['iteam']+','+j['qunt']+','+str(j['price'])+'\n')
 
         # print(iteem)
+        df=pd.read_csv(filename)
+        # print(df.head())
+        # _qunt = 0
+        for i in range(df.shape[0]):
+            item=dict(df.iloc[i])
+            AddedItemsInList.me.checklist.append(
+                listingOrder(
+                    # self.checkoutlist,
+                    AddedItemsInList.me,
+                    order=OrderItems(
+                        id=item['id'],
+                        product=item['iteam'],
+                        qunt=item['quntity'],
+                        price=item['price']
+                    )
+                )
+            )
 
+        AddedItemsInList.me.checklist.append(
+            listingOrder(
+                AddedItemsInList.me,
+                order=OrderItems(
+                    id="Total", 
+                    product="Iteam",
+                    qunt=df['quntity'].sum(),
+                    price=df['price'].sum()
+                )
+            )
+        )
+        AddedItemsInList.me.show()
+    
+    def deleteFile(self):
+        path_=os.path.join(os.getcwd(),'app','bills')
+        filepath=os.path.join(path_,self.e_name.get()+'.csv')
+        self.e_name.delete(0,tkinter.END)
+        os.remove(filepath)
+
+
+
+        
+        
 
         
 
@@ -163,25 +209,62 @@ class OrderList(ctk.CTkScrollableFrame):
             item.grid(row=i,column=0,pady=2)
 
         self.grid(row=3,column=0,sticky='nsew',padx=10,pady=10)
+    
+    def clearlists(self):
+        for i,item in enumerate(self.orders):
+            item.grid_forget()
+
+
+checklist=list()
 
 class AddedItemsInList(ctk.CTkScrollableFrame):
+    me=None
     def __init__(self,master,**kwargs):
         super().__init__(master,width=300,height=500,**kwargs)
+        self.grid_columnconfigure((0,1),weight=1)
+        self.checklist=checklist
+        AddedItemsInList.me = self
 
 
     def show(self):
 
+        for i,item in enumerate(self.checklist):
+            item.grid(row=i,column=0,pady=2)
+
         self.grid(row=0,column=0,sticky='nsew',padx=10,pady=10)
 
+    def clearlists(self):
+        for i,item in enumerate(self.checklist):
+            item.grid_forget()
+        self.checklist.clear()
+
 class CheckOutList(ctk.CTkFrame):
+    me = None
     def __init__(self,master,**kwargs):
         super().__init__(master,**kwargs)
+        CheckOutList.me = self
         self.grid_columnconfigure((0),weight=1)
 
-        self.b_checkout=ctk.CTkButton(self,text='Check Out',width=120,height=30)
-        self.b_reset=ctk.CTkButton(self,text='Reset',width=100,height=30)
-
         self.additeminlist=AddedItemsInList(self)
+        self.orderlist=OrderList(self)
+        # self.additem=AddItem(self)
+
+        self.b_checkout=ctk.CTkButton(self,text='Check Out',width=120,height=30,command=self.reSet)
+        self.b_reset=ctk.CTkButton(self,text='Reset',width=100,height=30,command=self.clearAll)
+
+    def clearAll(self):
+        self.orderlist.clearlists()
+        self.additeminlist.clearlists()
+        AddItem.me.deleteFile()
+
+    def reSet(self):
+        self.orderlist.clearlists()
+        self.additeminlist.clearlists()
+        # AddItem.me.deleteFile()
+
+
+        
+
     
     def show(self):
         self.b_checkout.grid(row=1,column=0,sticky='sw',padx=10,pady=10)
