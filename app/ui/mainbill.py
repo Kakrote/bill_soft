@@ -117,10 +117,10 @@ class AddItem(ctk.CTkFrame):
         # for j in self.bill_list:
         #     print(j['id']+","+j['iteam'])
         iteem.clear()
-        name=self.e_name.get()
+        self.name=self.e_name.get()
         path=os.path.join(os.getcwd(),'app','bills',)
         # fillname=path+name+'.csv'
-        filename= os.path.join(path, name+".csv")
+        filename= os.path.join(path, self.name+".csv")
         # fillename=filename
         with open(filename,'w',newline='') as csvfile:
             csvfile.write('id'+','+'iteam'+','+'quntity'+','+'price'+'\n')
@@ -158,10 +158,11 @@ class AddItem(ctk.CTkFrame):
             )
         )
         AddedItemsInList.me.show()
+        self.e_name.delete(0,tkinter.END)
     
     def deleteFile(self):
         path_=os.path.join(os.getcwd(),'app','bills')
-        filepath=os.path.join(path_,self.e_name.get()+'.csv')
+        filepath=os.path.join(path_,self.name+'.csv')
         self.e_name.delete(0,tkinter.END)
         os.remove(filepath)
 
